@@ -35,10 +35,26 @@ python --version
 Στο ίδιο παράθυρο PowerShell εκτελέστε:
 
 ```powershell
-python -m pip install selenium
+python -m pip install -r .\requirements.txt
 ```
 
-Περιμένετε να ολοκληρωθεί η εντολή. Την πρώτη φορά μπορεί να χρειαστεί σύνδεση στο Internet, ώστε το Selenium να κατεβάσει το κατάλληλο ChromeDriver.
+Το αρχείο `requirements.txt` εγκαθιστά το Selenium 4 και τις Python βιβλιοθήκες που χρειάζεται. Περιμένετε να ολοκληρωθεί η εντολή. Την πρώτη φορά μπορεί να χρειαστεί σύνδεση στο Internet, ώστε το Selenium να κατεβάσει το κατάλληλο ChromeDriver.
+
+### Python πακέτα
+
+Το script εισάγει απευθείας μόνο το `selenium`. Η έκδοση που χρησιμοποιήθηκε και δοκιμάστηκε σε Windows 11 είναι `selenium 4.49.0`. Το pip εγκαθιστά αυτόματα τις εξαρτήσεις του Selenium:
+
+| Πακέτο | Ρόλος |
+| --- | --- |
+| `selenium` | Έλεγχος του Chrome και αυτοματοποίηση της φόρμας σύνδεσης |
+| `trio`, `trio-websocket` | Ασύγχρονη επικοινωνία του Selenium με τον browser |
+| `urllib3`, `certifi`, `websocket-client` | HTTP, πιστοποιητικά TLS και WebSocket επικοινωνία |
+| `typing_extensions` | Συμβατότητα type hints |
+| `attrs`, `sortedcontainers`, `outcome`, `sniffio` | Βοηθητικές βιβλιοθήκες του Selenium |
+| `cffi`, `pycparser` | Υποστήριξη κρυπτογραφημένης επικοινωνίας |
+| `wsproto`, `h11`, `PySocks` | WebSocket, HTTP/1.1 και προαιρετική υποστήριξη proxy |
+
+Δεν χρειάζεται να εγκαταστήσετε αυτά τα πακέτα ένα-ένα. Η εντολή `python -m pip install -r .\requirements.txt` τα εγκαθιστά αυτόματα.
 
 ### 4. Σύνδεση στο captive portal
 
@@ -69,6 +85,20 @@ python .\main.py
 
 Το script εμφανίζει το αποτέλεσμα. Επιστρέφει κωδικό `0` σε περίπτωση επιτυχίας, `1` μετά από αποτυχημένες προσπάθειες σύνδεσης ή `2` όταν λείπει κάποια απαραίτητη ρύθμιση.
 
+### 5α. Δοκιμή χωρίς πραγματικό pfSense portal
+
+Το project περιλαμβάνει τη σελίδα `mock_portal.html`, ώστε να μπορείτε να ελέγξετε το Selenium χωρίς πραγματικό captive portal ή πραγματικά στοιχεία σύνδεσης. Στο PowerShell, από τον φάκελο του project, εκτελέστε:
+
+```powershell
+$env:PFSENSE_URL = "file:///C:/Users/YourName/Captive-Portal-Auto-Login-Script/mock_portal.html"
+$env:PFSENSE_USERNAME = "test-user"
+$env:PFSENSE_PASSWORD = "test-password"
+$env:PFSENSE_HEADLESS = "true"
+python .\main.py
+```
+
+Αντικαταστήστε το `C:/Users/YourName` με τη δική σας διαδρομή. Τα `test-user` και `test-password` είναι εικονικά και χρησιμοποιούνται μόνο για αυτή τη δοκιμή. Επιτυχής δοκιμή εμφανίζει τα μηνύματα `Login successful` και `Successfully logged in`.
+
 ### 6. Επόμενες εκτελέσεις
 
 Ανοίξτε ξανά το PowerShell στον φάκελο του project και επαναλάβετε τις τέσσερις εντολές των μεταβλητών περιβάλλοντος και μετά την εντολή `python .\main.py`. Ο υπολογιστής πρέπει να είναι συνδεδεμένος στο ίδιο εξουσιοδοτημένο δίκτυο.
@@ -86,7 +116,7 @@ python .\main.py
 Σε Linux εγκαταστήστε την Python και το Selenium, ορίστε τις ίδιες απαραίτητες μεταβλητές περιβάλλοντος και εκτελέστε το script:
 
 ```bash
-python3 -m pip install selenium
+python3 -m pip install -r requirements.txt
 export PFSENSE_URL='https://portal.example.com:8000/'
 export PFSENSE_USERNAME='your_username'
 export PFSENSE_PASSWORD='your_password'
